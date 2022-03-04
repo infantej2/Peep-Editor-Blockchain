@@ -1,0 +1,62 @@
+/*-----------------------------------------------------------------
+# Student's Name: Filip Dosenovic, Jethro Infante, Damion Shillinglaw
+# Lab 7 Exercise 3
+# Lab Section: X01L, Fall 2021
+# CMPUT 201, Fall 2021
+# Lab Instructor's Name: Nesrine Abbas
+
+Purpose: From lab specs: This is a text file containing the 
+explanation of our testing
+*----------------------------------------------------------------*/
+
+test5-deletion: Testing deletion of the peep moe times than it inserts
+test5-insert: Testing simple inserts of the peep
+test5-manyInserts: Testing a ton of inserts to the peep
+test5-multiple: Testing multiple insertions and deletions
+test5-multipleView: testing multiple Insertions and deletions and viewing
+test5-view: Simple testing for insertiona nd deletion and viewing
+test5-viewEach: Testing a simple insertaion and deletion and viewing after each event.
+
+test5.c is the skeleton for the above tests so below when you call it it will use that file to make sure our tests can run.
+
+FOR THESE TESTS, THE USER MUST TYPE IN ./peepTest.sh IN THE TERMINAL WHEN IN OUR DIRECTORY FOR ALL THE TESTS TO RUN.
+FOR THE ABOVE TESTS 
+
+
+
+EXPLANATION FOR TESTS BELOW:
+
+test1.c: testing to get peep at time 
+This test contains hardcoded values that will populate a single block in the
+block chain. This is done so that we can set the time for each transaction
+manually in order to catch the time stamp of the date. This then is able to call
+the regular getPeep function to recreate the peep and then also calls the getPeepAtTime
+in order to get the peep up to including the the timestamp. This testing allows us
+to see the functionality between the two and compare how one just gets the regular
+peep while the other stops at the time stamp.
+
+test2.c: testing read and write for only one block
+This test opens up the peepEditor so that it allows the user to input the transactions
+in a single block. We did it this way so that it shows that our functions are able to
+read and write properly and also show that after completing these tasks it can perform
+the other functions as well such as getPeep, addTransactions, and printTransactions.
+
+test3.c: testing read and write for more than one block
+This test opens up the peepEditor so that it allows the user to input the transactions
+in a single block. We did it this way so that it shows that our functions are able to
+read and write properly and also show that after completing these tasks it can perform
+the other functions as well such as getPeep, addTransactions, and printTransactions.
+This is very similar to one of our other tests, but we wanted to demonstrate that we
+are able to do this for more than one block and perform the functionalities of our
+other functions as well.
+
+test4.c: testing verify block chain
+This test opens up the peepEditor and it allows the user to put input the transactions
+and perform this for two sessions. We are doing this in order to create at least two
+blocks because we want to check the validity of the block chain. Thus, we go through this
+process and call verifyBlockChain to see if the block chain has been compromised. This
+should show that the block chain is verified because there has been no changes. However,
+we changed a member in the block  in order to create a compromise. Then we call on the
+verify block chain again which should show that the block chain has been compromised.
+
+

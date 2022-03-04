@@ -1,0 +1,18 @@
+peep.c: This fucntion will implement all of the previous programs that we made before and implement them into peep.c.
+        Based on the usr input that the user gives us, we cna read and detemrine what we need to do to the peep. We can
+        make a new peep, edit a peep get the peep at a certain timestamp, get the entire peep, and verify the peep. 
+
+peepEditor.c: This fucntion has everything to do with our editing. We will have the user interface and from there, get the 
+              users input on whatr they want to do with the peep. they can either add to the peep, delete something in the peep,
+              view the characters, and save their progress and exit
+
+blockChain.c: This will have all of the hashing fucntions implemented into it. It will also give us the alogrithm and program 
+              for the merkleTree root. All helper fucntions will be found there as well. 
+
+design.txt: the design.txt is an explanation of each of our functions and what they do. This file also
+            describes the decisions we made and why we made them as well as an issues list that shows 
+            what issues we had throughout the project and how we solves it
+
+Makefile: The makefile is going to compile everything before being run
+
+Tests: This si a directory that will have all of our testing it it and ran to ensure our functions are working properly.

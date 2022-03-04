@@ -1,0 +1,251 @@
+ISSUES LIST:
+    1) How are we gonna test everything together? Since we all have other classes and other resposibilities that we have 
+       to attend, the way we figured this out best was by communication. We would all say what we did and what errors we 
+       would have and we would schedule a meeting and discuss as a team how we could resolve this problem.
+
+    2) What about seg faults? We would sue the debugger everychance that we could to see where the error is and by doing that,
+       figure out what we could do to solve it. 
+    
+    3) How can we make sure the user can only do 64 transactions? What we did is make a flush function that woudl flush all
+       of the transactions once they exceed 64. We also implimented code that will do it for us once the user reaches 64 transactions.
+       By doing this we will ensure that the user is only allowed to have 64 transactions each session. We also used our only allowed 
+       global variable which is explained later on in the file.
+    
+    4) How can we keep track of the transactions? We had a hard time trying to update the transactions as we went on in the peep
+       editor, so what we found was to use the EPOCH time as well as the event_type and by using those we were able to figue it all out.
+    
+    5) When do we need to malloc? This was more specifically a problem in the readBlockChain. The way we figure this out was to make a count 
+       for the links. WE know that for the first one we can jsut read the current link and read its information but when it comes to anyhting after
+       that, we would need to malloc for the size of the LINK then reading it. By doing thsi we were able to solve this problem. 
+    
+    6) How can we make testign easier for us. One of the solutions was to make a bash script of the peepEditor tests since there is so many 
+       different test that we can do. This way, its easier to execute and make it easier to not make a bunch of mistakes. 
+
+BLOCKCHAIN.h
+    
+    For our blockchain this is hwere all of our structs were made. We wanted to be pretty precise in what we wanted to impliment for 
+    the best use so we broke it down into 4 different structs.
+
+        MODIFICATION:
+            Whenever we need to modify something we need to know what we modifying, where we are modifying, and what kind of modification
+            it is. That is why we added an event type field in the struct and gave it only one bit. This way it would be easier for us to 
+            navigate throughthe code and help with the later functions. 
+
+        TRANSACTION:
+            This struct represents a transaction fo 8 bytes. We know that the timestmap is already 6 bytes so we can just
+            use that and then call the modification aprt of the transaction. 
+
+        BLOCK:
+            We wanted everything that can be considered part of a blcok to be in this struct. This represents a block 
+            with 32 bytes for the head + up to 8*64 bytes for the transactions. In our struct we decided to put the previous Hash,
+            the timestamp, blockNum,blockSize, blockhash, hedHash, and transactions. 
+
+        LINK: We thought it would be easier for us to do everyhting as a linked list so thats why we made a structs
+              that will help us with that. The fields of the struct are next and block. next will be a pointer to the 
+              next block chain and blok is an object that stores the date from the block struct.
+
+PEEPEDITOR.h
+    editor:
+        We need to make a module so that we can edit the peep. This function edits the peep, saves transactions in modBuffer, 
+        and returns the number of transactions written in the buffer. Here we include the blockChain.h because without it we wont be 
+        able to do any of the functions later on in the code. All edits will run through the peepeditor.
+
+PEEPEDITOR.c
+
+    Editor:
+        For peepEditor, since this is our user interface and basically where the function will run off of,
+        we wanted this to be working 100% no matter what circumstances. We first defines an insert and delete
+        with the values of 0 and 1. This will make more sense later on. Right after is the printPeep fucntion.
+        This function take the entire peep and prints each element in it. It will iterate through the peep and
+        print each element until the value in the peep is a null terminating character meaning that it has reached
+        the end of the peep. The checkInRange function after is a helper fucntion that checks if the user input
+        is valid for a peep position. We now want to get the user input. We wanted to type less code and wanted 
+        our code to be as clean as possible, so we went with a switch case for all our options instead of a 
+        bunch of if elif else statements. By doing it like this it saves space and it gives a better understanding 
+        of what each case does deping on th euser input. And we made it easier by following the user interface. 
+        For example, the second option is to see if inserting is feasible so we put that as the second case. The 
+        function returns the userinput and is not used in the editor function. Here we had out menu and for each 
+        option that the user puts in, is a new execution. We didnt want to have a new fucntion for just the menu
+        cause for one, its unessecary, and 2, it makes more sense if we have all of the messages that we have to print 
+        as we go through because when the user executes the code he gets the menu, then all of messages he should expect
+        depending on the option they enter. This way makes it easier for other members to navigate through the code 
+        and see where eroors may occur or if the coder want to understand the code quickly and efficiently. For each
+        of the options that the user enters, there will be some kind of error message displayed if there is something 
+        that the user is trying to enter and the program cannot execute. Again we wanted this program to be as clear and 
+        consise as we can make it so by having these error messages, it notifies that the user has in fact done something 
+        wrong and must try again another way. Each time the user is finished with an option the number of transactions
+        goes up by one. This will be user later on in the fuction. 
+
+        With insertion, we ask the user what character they want to insert and which position to insert it at. We made the 
+        assumption that is the user enters more than one character, then we will only take the first one. We used the ASCII
+        valeus to do an error checking since it would be less code for us to write. That one line is basically only asking 
+        for an alphabetical character. If anything else is entered then the user will be displayed an error message. A block
+        contain non alphabetical character but for the sake of the pdf and presentation that was given, the examples only had 
+        alphabetical characters so we are going to assume that the user can only enter alphabetical entries. After the user
+        enters a character and position, then we will perform the insertion. When we think of insert, instead of replacing
+        we are going to shift all of the characters after the user inputted character once to the right. We have an if and else
+        to do this for us. It is saying that until the peep position is equal to a NULL terminating character, shift each value
+        one to the right, This way, none of the previous characters will be deleted only moved. 
+        
+        With the delete function, we had the same mindset as we
+        did with the menu. We wanted the code to be readable so instead of making another helper fucntion to get the user
+        option for deletiona nd print the messages, we wanted to print it in the same place sicne that really the only time
+        that the user will be asked for deletion. If there was another functiont hat we needed that same menu, then yes we 
+        would write another helper function for it. After the deletion we call the print peep to show the user what the peep 
+        is at currently. 
+
+        After each option is executed this is where we use our insert and delete defines as stated eariler in the file. These 
+        two values are basically going to help us with the number of transactions, No matter the event type, it will take the 
+        current EPOCH time or the timestamp and subtract it from the before_epoch value that we stated above. By using this method,
+        we can increase the transactions for each event by one each time they are executed and now when the user is finished with 
+        each event, the program returns the number of transactions. 
+
+    isBufferFull:
+        We always want to check and see if the buffer is full, so this function will help us with that. We are going to use this 
+        fucntion, and with it give us a true or false value. If the function gives us a true value, this means that the buffer is full.
+        We cant keep on adding to the buffer or we will get errors with the memory, so the solution to this was to flush everything 
+        in the buffer and reset the number of transactiosn. Since in the specs we are not allowed to go over a certain amount of transactions,
+        it would make no sense to anyone why the user can only have for example 10 transactions but then be allowed to do 11. This why 
+        we flush the transactions and do a full reset. 
+
+    flushBuffer:
+        This function will be used in the isBufferFull and this will do the flushing for us. It must reset everything to the beginning,
+        thats why the timestamp, position and event_type ares set to 0 and the character is set to a NULL terminating character to say that 
+        there is nothing now in the peep. 
+
+
+BLOCKCHAIN.c
+
+        digestData:
+            We want to be able to handle all of our data. This function will be one of the many helpers that can do that for us. 
+            This fucntion will return a hash to us and hold everythign that we need to be able to use it in later functions. 
+
+        copyIntoArray:
+            This is a helper fucntion for the MerkleTree. We knew that the merkle tree was going to be a bit of a challenge so this is where
+            helper functions will become very useful to us. This function takes the elements which in this case are the hashes of transactions,
+            from one array and copies them into another. This whole fucntion is in relation to splitting up the transactions into 2 seperate arrays.
+            We basically go from start to end in a for loop and concatinate the hashes from one source destination to another. 
+
+        getOrder:
+            This is a helper fucntion for getBlockHash and acts as a preliminary step for the getMerkleRoot. This function will return the rows
+            of the binary tree that are defined in the algorithm that we used for the merkle algorithm. Again, like we said before we wanted 
+            the merkle tree to be clear to understand so helper function will be the best way to go about this. With no helper functions, the code 
+            will be a lot more confusing for other developers to understand. 
+
+        getMerkleRoot:
+            We wanted this to be a recursive function to begin with since it would be easier to use than is we didnt do it as a recursive fucntion. 
+            This function implements the merkle algorithm that we made before. Before this function can be used correctly, the main array has to have 
+            the hashes of all the set transactions in a block. We made a variable called new Hash that will point to the root of the original call,
+            and all of the other calls will point to a hash of two transactions. When we enter the fucntion we get the two concatinated hashes that we
+            get from digestData. Then it check to see how many transactions we have. We want an even amount of transactions, so if by any chance we get
+            an odd number of transactions we will copy only the last transaction and add it by concatinating the hashes. After this we will increase the
+            size. We wanted to have a base case that we can rely of then if it s ot matching with the base case we will continue on. Again like we said 
+            many times before, we wanted to type as least as possible, while also having a very clear and consise code for everyone to read. In the else,
+            we can decompse the main array, split it into two and thats why we made getMerkleRoot a recursive call. To make it easier for us to understand. 
+            After the recursive calls are made, we get the hashes of the arrays and concatanate them.
+
+        isMemoryAvailable:
+            We want to check as much as we can for any memory leakes or memory errors because if we find one later on in the code and arent able to find it,
+            it will be very difficult and time consuming for us to figure out. This is why we wrote this function. It is a simple function
+            but it basically is going to take the pointer and see if we have allocated memory or not. If the function returns 0, then we have allocated all memory.
+        
+        getHeadHash:
+            This function will be a helper function to help us get the head hash of the block. Here we want to go throught he static array and get the headHash. 
+            From the previous structs that we made, the headHash MUST be at most 7 bytes. This is because of the lab specs that were given to us. This is also because 
+            data is size 7 in the previousHash. This is also why we are only mallocing for 7 bytes of data. We then set up an inital size of data of 0. After we need to 
+            concatinate the timestamp into the data. 
+
+        getBlocHash:
+
+        addTransactions:
+            If we want to update a blockchain, we need to be able to let the user add transactions into it. This is why we are making a function that will do that
+            for us. Each transaction will be considered a block or setting up the first block. Because of the specs, there is only two ways a new block is added.
+            One is that when the session ends. If there is more than 64 transactions, they all will be placed in a buffer. The other being if the user doesnt end the 
+            session but is exceeding 64 transactions. We do not want the user to have more than 64 transactions no matter what so we need to find a way to get around that. 
+            If the user exceeds for then 64 transactions and they have not yet ended the session, then the editor will flush the buffer and record them on ledger. This is 
+            where we are going to use our one global variable. The global varibale is called last_link and will be updated wiht the latest block/link in blockChain. We wanted 
+            clear and readable code, so we did a while loop inside of our printTransactions fucntion. This will go through the blockChain until it was NULL. We wanted also a clear
+            step by step you can say display message to see where we are in the blockChain so we made a print statement that would show us exactly that. In the while loop now,
+            we made a for loop that will go through all the transactions in the current block and assign a time to them. We then wanted to check and see if it was an insert 
+            or a delete event. We wanted to do this because we need to knoe exactly what values we need to print for which event_type for even more clarity. So by doing that,
+            we now can be able to print the time of the event, the position and character that the user inputted for the event. After all that is finished we can move onto the 
+            next block. 
+
+        getPeep:
+            We need to be able to get the peep and be able to print it into a string. There is no point of a peep or blockChain if we are not able to retrive it and convert it into 
+            a readable string. This is why we made this fucntion. What this function will do is take the first block in the blockchain and an empty peep which is going to be a pointer
+            to a string, and will traverse through the whole block chain the same as a linked list and recreate the peep as a readable string. Since we know that we can only have characters 
+            in the peep and we only cn have a certain number of characters which is 256 we then know that we can allocate memory for exactly 256 bytes and make that our temporary peep 
+            to put the current blocks info inside. Unlike a while loop like we did in most of our traverses, we wanted to use a for loop since this will be a code that wont have a ton of typing, 
+            we can compensate that by using a for loop to our advantage. Inside the for loop we again wanted to use the event type and by knowing that we can figure out how to create the 
+            peep based on the event type. After each transaction we will concatinate the temp peep to the empty peep since its the first one and then move onto the next block.
+
+        getPeepAtTime:
+            This fucntion will basically do the same as getPeep but it will give us the peep based on the timestamp that the user gives us. It will do the exact same things as the getPeep,
+            but once the timestamo matches the one we are looking for, we will get out of the loop and concatinate the values we have. Since we found the timestamp we cant keep on going,
+            or else whats the point of this fucntion? So to solves that we made an if statement and check is the flag == 1, then we break from the function. 
+
+PEEP.c
+
+    main:
+        The main option is were we want to check all of our options. Just like the menu we made in peepEditor.c, we wanted to do the same thing where we will rely on the user input and 
+        from that, we will detemrine what we ned to do in the function. Again, this was one of those fucntion where we knew there would be a ton of code so we decided to go with a switch case
+        for this. We also used a getopt. This can ensure what file we are using for an infile and what file we should be getting as an output.
+    
+    strToNum:
+        This is a helper fucnction for the atTimePeep fucntion. This is as simple as just taking 
+    
+    initializePeep:
+        We need a memset for our peep if there are null characters for use. This si why we made this function. We are going to take a pointer to the peep and allocate memory for the size of the 
+        peep times the peep length. We will then set each of the values to a null terminating character and then return the resetted peep.
+    
+    printUsage:
+        We need to tell the user how this program is to be used or else they will be confused and not know what to type. This is why we made a function like this. It is basically another menu that 
+        simply jsut explain to the user what input values will work and what each specified value will do. 
+
+    
+    missUse:
+        We need to error check even for the menu so by implimenting a fucntion that will see if there is an error in the paring 
+        of arguments, this will help us make the program run smooth and not break. 
+
+    
+    newPeep:
+        create a new peep, and, after a session, take the transactions and enter them
+        into a block chain object (represented using a linked list). Once a session is over and 
+        block chain is created, the block chain object is written to a specified binary file.
+    
+    editPeep:
+        edit an existing peep by reading a block chain object from a specified 
+        binary file, then invoke editor for new transactions. Finally, after a session,
+        add transactions into existing block chain and write the object to the same 
+        binary file.
+
+    verifyPeep:
+        To check the integrity of the peep we need to have a fucntion that will check and see 
+        the data of the peep has been tampered with at all. The reason we made this fucntion 
+        was to ensure the peep has not been broken and can be used for later fucntions. 
+    
+    historyPeep:
+        We want to make sure that each transaction was chronologically correct, so we then made
+        a fucntion that will do exactly that. By having a fucntion like historyPeep, we can see 
+        what the user has done to the peep and also for developers to see if what they did was 
+        in the correct order. 
+    
+    reproducePeep:
+        We want to be able to get the current peep from a file whenever the user wants it so by doing
+        this we are able to read the file and print each character of the peep. 
+
+    
+    atTimePeep:
+        Just like the previous function, this will do the exct same thign but jsut at a certain time stamp. 
+        Sometimes users dont want to see their entire transaction hsitory but only want to see it before a certain
+        one so by doing a fucntion like this we are able to figure out how we can do exactly that that will save 
+        reading time for the user. 
+
+TESTING
+    We wanted to have a ton of test for each circumstance so thats why we wanted to do a TON of tests to make sure 
+    that our code was running at 100% and not risk losing nay marks due to not having enough tests for clarity. For the 
+    testing of the peepeditor, Filip decided that it was best to use his 220 knowledge that he learned this year and 
+    decided to make a bash script with each test run in it so that all we had to do is make a skeleton of the testing
+    which in this case was test.c and only make a new rule in the makefile so that we can run all the tests. All the user
+    has to write in the temrinal is ./peepTest.sh and all the test results will show.
